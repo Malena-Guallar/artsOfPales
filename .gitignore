@@ -1,2 +1,4 @@
 .DS_Store
-arts_venv
+
+# Python virtual environement
+venv
