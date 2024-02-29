@@ -9,11 +9,13 @@ def getAll():
     return jsonify(get_all_persons()), 200
 
 # GET request
-@app.route("/get_artist/<artist_name>")
-def getArtist(artist_name):
+@app.route("/get_artist/<index>")
+def getArtist(index, artist_firstname, artist_lastname, field):
     artistsData = {
-        "name" : artist_name,
-        "field" : "art"
+        "index": index,
+        "firstname" : artist_firstname,
+        "lastname": artist_lastname,
+        "field" : field
     }
 
     extra = request.args.get("extra")

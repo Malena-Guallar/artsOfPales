@@ -10,23 +10,28 @@ sourcePage = requests.get('https://en.wikipedia.org/wiki/List_of_Palestinians#Mu
 
 soup = BeautifulSoup(sourcePage.text, 'html.parser')
 
-elements = soup.find(class_='wikitable').find_all('tr')
+elements = soup.find(class_='wikitable').find_all('tr')[1:]
 
 persons = []
+
 
 for element in elements:
     name = element.find('a')
     if name is not None:
+        fullname = name.text.split(' ')
+        firstname = fullname[0]
+        lastname = ' '.join(fullname[1:])
         field = element.find('td').find_next_sibling('td')
-        new_person = {"name": name.text, "field": field.text}
+        new_person = {"index": 0, "firstname": firstname, "lastname": lastname, "field": field.text}
         if "Politics" not in field.text and "Academic" not in field.text and "Academia" not in field.text and "Business" not in field.text and "Medicine" not in field.text and "Religion" not in field.text and "Sport" not in field.text:
             persons.append(new_person)
     else:
         name = None
-print(persons)
 
-# here I need to convert unicode strings to regular ascii strings because python2 does not support unicode natively.        
-#converted_persons = [{key: value.encode('utf-8') if isinstance(value, unicode) else value for key, value in person.items()} for person in persons]
+for person in persons:  
+    index = persons.index(person)
+    person["index"] = index
+    
 
-def get_all_persons():
+def get_all_persons():  
     return persons
