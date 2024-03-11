@@ -29,7 +29,6 @@ def scraper(url):
         index = persons.index(person)
         person["id"] = index
 
-
 scraper('https://en.wikipedia.org/wiki/List_of_Palestinians#Musicians')
 
 def get_persons():
