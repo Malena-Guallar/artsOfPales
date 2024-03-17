@@ -6,4 +6,6 @@ work in progress
 
 activate virtual environment -> source artsOfPales/arts_venv/bin/activate <br>
 deactivate virtual environment -> deactivate <br>
-launch api server -> python3 api.py 
+see packages installed in virtual environment -> pip3 list
+starting flask server -> flask run
+
