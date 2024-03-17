@@ -19,15 +19,11 @@ def scraper(url):
             firstname = fullname[0]
             lastname = ' '.join(fullname[1:])
             field = element.find('td').find_next_sibling('td')
-            new_person = {"id": 0, "firstname": firstname, "lastname": lastname, "field": field.text}
+            new_person = {"firstname": firstname, "lastname": lastname, "field": field.text}
             if "Politics" not in field.text and "Academic" not in field.text and "Academia" not in field.text and "Business" not in field.text and "Medicine" not in field.text and "Religion" not in field.text and "Sport" not in field.text:
                 persons.append(new_person)
     else:
         name = None
-
-    for person in persons:  
-        index = persons.index(person)
-        person["id"] = index
 
 scraper('https://en.wikipedia.org/wiki/List_of_Palestinians#Musicians')
 

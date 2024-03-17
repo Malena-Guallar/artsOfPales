@@ -6,5 +6,4 @@ collection_name = dbname["artists"]
 
 dataFromScraper = get_persons()
 
-
 collection_name.insert_many(dataFromScraper)

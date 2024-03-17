@@ -2,7 +2,7 @@ from pymongo.mongo_client import MongoClient
 import certifi
 import os
 from dotenv import load_dotenv
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request
 from bson.json_util import dumps
 
 load_dotenv()
