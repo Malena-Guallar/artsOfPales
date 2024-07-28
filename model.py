@@ -1,9 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Union
-from datetime import datetime
+from typing import Optional, Union
 
 class Artist(BaseModel):
-    _id: Optional[Union[str, int, float]]
+    _id: Optional[Union[str, int, float]] = Field(None, alias="_id")
     firstname: str
     lastname: str
     field: str

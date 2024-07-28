@@ -4,7 +4,9 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, Response, request, jsonify
 from bson.json_util import dumps, ObjectId
-import json
+from pydantic import ValidationError
+
+from model import Artist
 
 load_dotenv()
 
@@ -27,27 +29,7 @@ def get_artists():
    artists = list(db.artists.find())
    return Response(dumps(artists), status=200, mimetype="application/json")
 
-# def get_artists():
-#   artist_id = request.args.get('_id')
-#   filter = {} if artist_id is None else {"_id": artist_id}
-#   artists = list(get_database().artists.find(filter))
-
-#   list_of_artists = Response(
-#     response = dumps(artists), status = 200, mimetype="application/json")
-#   return list_of_artists 
-
-# @app.post("/api/artist")
-# def post_artist():
-#   firstname = request.args.get("firtsname")
-#   lastname = request.args.get("lastname")
-#   field = request.args.get("field")
-
-#   dbname = get_database()
-#   collection = dbname["artists"]
-#   collection.insert_one({"firstname" : firstname, "lastname": lastname, "field": field})
-#   return f"CREATE : {firstname} was added to collection" 
-
-@app.get("/api/artists/<artist_id>")
+@app.get("/api/artist/<artist_id>")
 def get_artist(artist_id):
   db = get_database()
   try:
@@ -59,7 +41,23 @@ def get_artist(artist_id):
   except Exception as e :
       return jsonify({"error" : str(e)}), 400
 
+@app.post("/api/artist")
+def post_artist():
+    try:
+        data = request.json
+        artist = Artist(**data)  # Validez les données avec Pydantic
 
+        db = get_database()
+        result = db.artists.insert_one(artist.dict(by_alias=True))  # Utilisez by_alias pour gérer `_id`
+        return jsonify({"message": f"CREATE: {artist.firstname} was added to the collection", "id": str(result.inserted_id)}), 201
+
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+    
 if __name__ == "__main__":   
 
    db = get_database()
