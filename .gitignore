@@ -2,6 +2,7 @@
 
 # Python virtual environement
 arts_venv/
+.venv
 
 #
 .env
