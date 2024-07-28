@@ -33,7 +33,7 @@ def internal_error(error):
    return jsonify(f"{error} : Internal server error"), 500
 
 
-@app.get("/api/artists")
+@app.route("/api/artists", methods=["GET"])
 def get_artists():
    try:
     db= get_database()
@@ -45,7 +45,7 @@ def get_artists():
    except Exception as e:
       return jsonify({"error": str(e)}), 500
 
-@app.get("/api/artist/<artist_id>")
+@app.route("/api/artist/<artist_id>", methods=["GET"])
 def get_artist(artist_id):
   db = get_database()
   try:
@@ -59,7 +59,7 @@ def get_artist(artist_id):
   except Exception as e :
       return jsonify({"error" : str(e)}), 400
 
-@app.post("/api/artist")
+@app.route("/api/artist", methods=["POST"])
 def post_artist():
     try:
         data = request.json
