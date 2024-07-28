@@ -5,12 +5,14 @@ from dotenv import load_dotenv
 from flask import Flask, Response, request, jsonify
 from bson.json_util import dumps, ObjectId
 from pydantic import ValidationError
+from flask_cors import CORS
 
 from model import Artist
 
 load_dotenv()
 
 app=Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 def get_database():
     uri = os.environ.get("MONGO_URI")
@@ -36,6 +38,9 @@ def get_artists():
    try:
     db= get_database()
     artists = list(db.artists.find())
+    for artist in artists:
+      artist["id"] = str(artist["_id"])
+      del artist["_id"]
     return Response(dumps(artists), status=200, mimetype="application/json")
    except Exception as e:
       return jsonify({"error": str(e)}), 500
@@ -46,7 +51,9 @@ def get_artist(artist_id):
   try:
     artist = db.artists.find_one({"_id": ObjectId(artist_id)})
     if artist:
-       return Response(dumps(artist), status=200, mimetype="application/json")
+      artist["id"] = str(artist["_id"])
+      del artist["_id"]
+      return Response(dumps(artist), status=200, mimetype="application/json")
     else :
         return jsonify({"error" : "Artist not found"}), 404
   except Exception as e :
@@ -59,7 +66,10 @@ def post_artist():
         artist = Artist(**data)
 
         db = get_database()
-        result = db.artists.insert_one(artist.model_dump(by_alias=True))  # Utilisez by_alias pour gérer `_id`
+        artist_dict = artist.dict(exclude_none=True)
+        if 'id' in artist_dict:
+            artist_dict['_id'] = artist_dict.pop('id')
+        result = db.artists.insert_one(artist_dict)
         return jsonify({"message": f"CREATE: {artist.firstname} was added to the collection", "id": str(result.inserted_id)}), 201
 
     except ValidationError as e:
